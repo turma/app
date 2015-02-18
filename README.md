@@ -1,47 +1,39 @@
-## React App Boilerplate
+# Turma
 
-Start developing React JS applications easily with the included tooling. Using gulp with browserify and jasmine for testing.
+Este repositório é usado para gerar a página principal da Turma
 
-Read more about how it works at: [React JS workflow, part 2](http://christianalfoni.github.io/javascript/2014/10/30/react-js-workflow-part2.html)
+## Boilerplate
 
-### Install
+Para o desenvolvimento do protótipo inicial foi utilizado o [React application boilerplate](https://github.com/christianalfoni/react-app-boilerplate) versão 2.2.2
 
-* Clone the repo
-* Run `npm install`
+### Como utilizar
 
-### Changes
+* Clone este repositório `git clone https://github.com/turma/portal`
+* Instale as dependências `npm install`
+* Instale o Gulp `sudo npm install -g gulp`
 
-**2.2.2**
-  - Added es5 shim to testrunner-phantom.js html as phantomJS does not have bind etc.
+### Desenvolvimento
 
-**2.2.1**
+* Execute `gulp` na raiz do projeto
+* Inicie um servidor web na pasta `build`, pode-se utilizar o `python -m SimpleHTTPServer 3000`
+* Acesse `localhost:3000` no navegador para exibir a aplicação
+* Acesse `localhost:3000/testrunner.html` no navegador para exibir os casos de teste
+* Todas as mudanças nas pastas `app` ou `styles` vão automáticamente recompilar os arquivos da pasta `build`
+* Os testes e as aplicações vão automáticamente serem atualizadas no navegador
+* Execute `gulp test` para rodar todos os testes com phantomJS e produzir relatórios XML
 
-  - Updated package.json dep versions
+### Produção
 
-**2.2.0**
+* Execute `NODE_ENV=production gulp deploy` para salvar códigos reduzidos prontos para produção
 
-  - Using gulp-watch instead of gulp.watch, now reacts to adding and deleting files
+### Pastas
+* `build/`: Onde são salvos os arquivos compilados automaticamente em *Desenvolvimento*
+* `dist/`: Onde é salvo o código pronto para produção
+* `styles/`: Onde são inseridos os arquivos CSS
+* `specs/`: Onde são inseridos os arquivos de teste
+* `gulpfile.js`: O arquivo de configuração do gulp
 
-**2.1.0**
+### Observações
 
-  - Fixed watch bug
-  - Deploy does not include react-addons
-
-### Development
-* Run `gulp`
-* Start a webservice in the `build` folder, f.ex. `python -m SimpleHTTPServer`
-* Go to `localhost:8000` to display the app
-* Go to `localhost:8000/testrunner.html` to see your tests
-* Any changes to `app` or `styles` folder will automatically rebuild to `build` folder
-* Both tests and application changes will refresh automatically in the browser
-* Run `gulp test` to run all tests with phantomJS and produce XML reports
-
-### Minify the code, ready for production
-* Run `NODE_ENV=production gulp deploy`
-
-### Directory
-* **build/**: Where your automatically builds to. This is where you launch your app in development
-* **dist/**: Where the deployed code exists, ready for production
-* **styles/**: Where you put your css files
-* **specs/**: Where you put your test files
-* **gulpfile**: Gulp configuration
+* O arquivo `dist/index.html` é a única página da sua apicação utilizada em produção
+* Gulp executa o LiveReload em desenvolvimento, então as mudanças feitas atualizarão automáticamente as páginas abertas
