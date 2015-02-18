@@ -5,15 +5,25 @@ var watchify = require('watchify');
 var reactify = require('reactify'); 
 var gulpif = require('gulp-if');
 var uglify = require('gulp-uglify');
+var sourcemaps = require('gulp-sourcemaps');
 var streamify = require('gulp-streamify');
 var notify = require('gulp-notify');
-var concat = require('gulp-concat');
-var cssmin = require('gulp-cssmin');
+var less = require('gulp-less');
 var gutil = require('gulp-util');
 var shell = require('gulp-shell');
 var glob = require('glob');
 var livereload = require('gulp-livereload');
 var jasminePhantomJs = require('gulp-jasmine2-phantomjs');
+
+// Plugin for gulp-less
+var LessPluginCleanCSS = require('less-plugin-clean-css');
+var cleancss = new LessPluginCleanCSS({ advanced: true });
+
+// Not working with sourcemaps! So don't use in dev.
+// https://github.com/less/less-plugin-autoprefix/issues/7
+var LessPluginAutoPrefix = require('less-plugin-autoprefix');
+var autoprefix= new LessPluginAutoPrefix({ browsers: ["last 2 versions"] });
+
 
 // External dependencies you do not want to rebundle while developing,
 // but include in your application deployment
@@ -122,26 +132,33 @@ var browserifyTask = function (options) {
   
 }
 
-var cssTask = function (options) {
+
+var lessTask = function (options) {
     if (options.development) {
       var run = function () {
-        console.log(arguments);
+        //console.log(arguments);
         var start = new Date();
-        console.log('Building CSS bundle');
+        console.log('Building LESS bundle');
         gulp.src(options.src)
-          .pipe(concat('main.css'))
+          .pipe(sourcemaps.init())
+          .pipe(less({
+            // Not working with sourcemap...
+            //plugins: [cleancss, autoprefix]
+          }))
+          .pipe(sourcemaps.write())
           .pipe(gulp.dest(options.dest))
           .pipe(notify(function () {
-            console.log('CSS bundle built in ' + (Date.now() - start) + 'ms');
+            console.log('LESS bundle built in ' + (Date.now() - start) + 'ms');
           }));
       };
       run();
       gulp.watch(options.src, run);
     } else {
       gulp.src(options.src)
-        .pipe(concat('main.css'))
-        .pipe(cssmin())
-        .pipe(gulp.dest(options.dest));   
+        .pipe(less({
+          plugins: [cleancss, autoprefix]
+        }))
+        .pipe(gulp.dest(options.dest));
     }
 }
 
@@ -154,9 +171,9 @@ gulp.task('default', function () {
     dest: './build'
   });
   
-  cssTask({
+  lessTask({
     development: true,
-    src: './styles/**/*.css',
+    src: './styles/main.less',
     dest: './build'
   });
 
@@ -170,9 +187,9 @@ gulp.task('deploy', function () {
     dest: './dist'
   });
   
-  cssTask({
+  lessTask({
     development: false,
-    src: './styles/**/*.css',
+    src: './styles/main.less',
     dest: './dist'
   });
 
